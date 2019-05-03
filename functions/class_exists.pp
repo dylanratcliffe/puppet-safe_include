@@ -22,7 +22,7 @@ function safe_include::class_exists (
   $content  = file($location,'safe_include/empty')
 
   # Return the result! The poop emoji is returned if the file isn't found
-  if $content == '💩' {
+  if $content == 'Not Found!!!' {
     false
   } elsif $content =~ String {
     true

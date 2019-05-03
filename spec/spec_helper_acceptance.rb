@@ -2,6 +2,7 @@
 
 require 'serverspec'
 require 'puppet_litmus'
+require 'tempfile'
 include PuppetLitmus
 
 if ENV['TARGET_HOST'].nil? || ENV['TARGET_HOST'] == 'localhost'

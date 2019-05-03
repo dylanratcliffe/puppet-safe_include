@@ -12,43 +12,54 @@ script:
   - 'bundle exec rake $CHECK'
 bundler_args: --without system_tests
 rvm:
-  - 2.5.3
-stages:
-  - static
-  - spec
-  - acceptance
-  -
-    if: tag =~ ^v\d
-    name: deploy
+  - 2.3.8
+env:
+  global:
+    - PUPPET_GEM_VERSION="~> 6.0"
 matrix:
   fast_finish: true
   include:
     -
-      env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop syntax lint metadata_lint"
-      stage: static
+      dist: trusty
+      script:
+      - bundle exec rake 'litmus:provision_list[travis_deb]'
+      - bundle exec bolt command run 'apt-get install wget -y' -i inventory.yaml --nodes='localhost*'
+      - bundle exec rake 'litmus:install_agent[puppet5]'
+      - bundle exec bolt command run 'puppet module install puppetlabs-postgresql' -n all -i inventory.yaml
+      - bundle exec rake litmus:install_module
+      - bundle exec rake litmus:acceptance:parallel
+      services: docker
+      sudo: required
     -
-      env: PUPPET_GEM_VERSION="~> 5.0" CHECK=parallel_spec
-      rvm: 2.4.5
-      stage: spec
+      dist: trusty
+      script:
+      - bundle exec rake 'litmus:provision_list[travis_deb]'
+      - bundle exec bolt command run 'apt-get install wget -y' -i inventory.yaml --nodes='localhost*'
+      - bundle exec rake 'litmus:install_agent[puppet6]'
+      - bundle exec bolt command run 'puppet module install puppetlabs-postgresql' -n all -i inventory.yaml
+      - bundle exec rake litmus:install_module
+      - bundle exec rake litmus:acceptance:parallel
+      services: docker
+      sudo: required
     -
-      env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
-      rvm: 2.5.3
-      stage: spec
+      dist: trusty
+      script:
+      - bundle exec rake 'litmus:provision_list[travis_el]'
+      - bundle exec rake 'litmus:install_agent[puppet5]'
+      - bundle exec bolt command run 'puppet module install puppetlabs-postgresql' -n all -i inventory.yaml
+      - bundle exec rake litmus:install_module
+      - bundle exec rake litmus:acceptance:parallel
+      services: docker
+      sudo: required
     -
-      env: DEPLOY_TO_FORGE=yes
-      stage: deploy
-branches:
-  only:
-    - master
-    - /^v\d/
-notifications:
-  email: false
-deploy:
-  provider: puppetforge
-  user: puppet
-  password:
-    secure: ""
-  on:
-    tags: true
-    all_branches: true
-    condition: "$DEPLOY_TO_FORGE = yes"
+      dist: trusty
+      script:
+      - bundle exec rake 'litmus:provision_list[travis_el]'
+      - bundle exec rake 'litmus:install_agent[puppet6]'
+      - bundle exec bolt command run 'puppet module install puppetlabs-postgresql' -n all -i inventory.yaml
+      - bundle exec rake litmus:install_module
+      - bundle exec rake litmus:acceptance:parallel
+      services: docker
+      sudo: required
+    -
+      env: CHECK="syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop"
