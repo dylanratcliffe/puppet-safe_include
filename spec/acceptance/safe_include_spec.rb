@@ -9,37 +9,37 @@ def run_function(name, param)
       content => String.new($return),
     }
   PUPPETCODE
- 
+
   idempotent_apply(pp)
   file('/result')
 end
 
-describe 'checking class existence' do
-  context 'when a class exists' do
-    it 'should have returned true' do
-      result = run_function('safe_include::class_exists','postgresql::server')
+describe 'testing supporting functions' do
+  describe 'checking class existence' do
+    context 'when a class exists' do
+      it 'returns true' do
+        result = run_function('safe_include::class_exists', 'postgresql::server')
 
-      expect(result).to contain 'true'
+        expect(result).to contain 'true'
+      end
+    end
+
+    context 'when a class doesn\'t exist' do
+      it 'returns false' do
+        result = run_function('safe_include::class_exists', 'postgresql::alkdjncsjkdncksdubc')
+
+        expect(result).to contain 'false'
+      end
     end
   end
 
-  context 'when a class doesn\'t exist' do
-    it 'should have returned false' do
-      result = run_function('safe_include::class_exists','postgresql::alkdjncsjkdncksdubc')
+  describe 'checking class location' do
+    context 'with a class' do
+      it 'works' do
+        result = run_function('safe_include::class_location', 'postgresql::server')
 
-      expect(result).to contain 'false'
+        expect(result).to contain '/etc/puppetlabs/code/environments/production/modules/postgresql/manifests/server.pp'
+      end
     end
   end
 end
-
-describe 'checking class location' do
-  context 'with a class' do
-    it 'should work' do
-      result = run_function('safe_include::class_location','postgresql::server')
-
-      expect(result).to contain '/etc/puppetlabs/code/environments/production/modules/postgresql/manifests/server.pp'
-    end
-  end
-
-end
-
