@@ -42,4 +42,17 @@ describe 'testing supporting functions' do
       end
     end
   end
+
+  describe 'using safe_include' do
+    context 'with a class' do
+      it 'works' do
+        apply_manifest(
+          'safe_include("postgresql::server")',
+          catch_failures: true,
+        )
+
+        expect(user('postgres')).to exist
+      end
+    end
+  end
 end
