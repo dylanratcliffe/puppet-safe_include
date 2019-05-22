@@ -45,9 +45,27 @@ describe 'testing supporting functions' do
 
   describe 'using safe_include' do
     context 'with a class' do
-      it 'works' do
+      it 'handles a single class' do
         apply_manifest(
           'safe_include("postgresql::server")',
+          catch_failures: true,
+        )
+
+        expect(user('postgres')).to exist
+      end
+
+      it 'handles an array' do
+        apply_manifest(
+          'safe_include(["postgresql::server","postgresql::server"])',
+          catch_failures: true,
+        )
+
+        expect(user('postgres')).to exist
+      end
+
+      it 'handles undef values' do
+        apply_manifest(
+          'safe_include(["postgresql::server",undef])',
           catch_failures: true,
         )
 
