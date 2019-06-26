@@ -25,6 +25,7 @@ matrix:
       - bundle exec bolt command run 'apt-get install wget -y' -i inventory.yaml --nodes='localhost*'
       - bundle exec rake 'litmus:install_agent[puppet5]'
       - bundle exec bolt command run 'puppet module install puppetlabs-postgresql' -n all -i inventory.yaml
+      - bundle exec bolt command run 'puppet module install puppetlabs-apache' -n all -i inventory.yaml
       - bundle exec rake litmus:install_module
       - bundle exec rake litmus:acceptance:parallel
       services: docker
@@ -36,6 +37,7 @@ matrix:
       - bundle exec bolt command run 'apt-get install wget -y' -i inventory.yaml --nodes='localhost*'
       - bundle exec rake 'litmus:install_agent[puppet6]'
       - bundle exec bolt command run 'puppet module install puppetlabs-postgresql' -n all -i inventory.yaml
+      - bundle exec bolt command run 'puppet module install puppetlabs-apache' -n all -i inventory.yaml
       - bundle exec rake litmus:install_module
       - bundle exec rake litmus:acceptance:parallel
       services: docker
@@ -46,6 +48,7 @@ matrix:
       - bundle exec rake 'litmus:provision_list[travis_el]'
       - bundle exec rake 'litmus:install_agent[puppet5]'
       - bundle exec bolt command run 'puppet module install puppetlabs-postgresql' -n all -i inventory.yaml
+      - bundle exec bolt command run 'puppet module install puppetlabs-apache' -n all -i inventory.yaml
       - bundle exec rake litmus:install_module
       - bundle exec rake litmus:acceptance:parallel
       services: docker
@@ -56,6 +59,7 @@ matrix:
       - bundle exec rake 'litmus:provision_list[travis_el]'
       - bundle exec rake 'litmus:install_agent[puppet6]'
       - bundle exec bolt command run 'puppet module install puppetlabs-postgresql' -n all -i inventory.yaml
+      - bundle exec bolt command run 'puppet module install puppetlabs-apache' -n all -i inventory.yaml
       - bundle exec rake litmus:install_module
       - bundle exec rake litmus:acceptance:parallel
       services: docker

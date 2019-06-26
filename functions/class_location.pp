@@ -10,10 +10,15 @@ function safe_include::class_location (
   # Segments of the class name
   $segments = safe_include::class_to_segments($class_name)
 
-  # Convert this into the relativee path i.e. role::sevrer would become
-  # role/manifests/server. Nore this is WITHOUT the .pp extension
-  $class_path = $segments[1,-1].reduce('manifests') |$path, $segment| {
-    "${path}/${segment}"
+  if $segments.length > 1 {
+    # Convert this into the relative path i.e. role::sevrer would become
+    # role/manifests/server. Nore this is WITHOUT the .pp extension
+    $class_path = $segments[1,-1].reduce('manifests') |$path, $segment| {
+      "${path}/${segment}"
+    }
+  } else {
+    # Handle scenarios where the class comes from init.pp
+    $class_path = 'manifests/init'
   }
 
   # Get the path to the module

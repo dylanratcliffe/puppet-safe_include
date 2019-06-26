@@ -31,6 +31,20 @@ describe 'testing supporting functions' do
         expect(result).to contain 'false'
       end
     end
+
+    context 'when the class has a single segment' do
+      it 'finds a single-name class' do
+        result = run_function('safe_include::class_exists', 'apache')
+
+        expect(result).to contain 'true'
+      end
+
+      it 'returns the correct path' do
+        result = run_function('safe_include::class_location', 'apache')
+
+        expect(result).to contain 'apache/manifests/init.pp'
+      end
+    end
   end
 
   describe 'checking class location' do
